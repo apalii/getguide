@@ -5,8 +5,7 @@ import urllib2 as u
 import sys
 
 '''
-*Not complete.
-version = 3
+date = 29.08.2014
  
 This simple program is designed to find all available links on guides:
  
@@ -52,24 +51,28 @@ def find_range(first,last,list=links):
                 print 'http://portaone.com' + i
  
 if __name__ == "__main__":
-    if sys.argv.__len__() == 1 or sys.argv.__len__() > 4:
+    if sys.argv.__len__() == 1 or sys.argv.__len__() > 4 :
         print "\nHow to use :\ngetguide.py  <int>   <  <int>      <str>"
         print "getguide.py <from MR> <to MR> <grep pattern>"
         print "\nExamples :\n~$ python getguide.py 35\t - all possible guides for one release."
-        print "~$ python getguide.py 35 bill\t - the same as ~$ python getguide.py 35 bill | grep -i bill"
+        print "~$ python getguide.py 35 bill\t - the same as ~$ python getguide.py 35 | grep -i bill"
         print "~$ python getguide.py 35 40\t - all possible guides for range of releases(from 35 to 40)"
         print "~$ python getguide.py 35 40 int\t - equivalent to ~$ python getguide.py 35 40 | grep -i int\n\nTry again!"
-        exit(0)
+        sys.exit(0)
  
-    elif sys.argv.__len__() == 2:
-        url_grep()
-        find_one(sys.argv[1])
+    elif sys.argv.__len__() == 2:  # script with 1 parameter
+        if not sys.argv[1].isalpha() and int(sys.argv[1]) > 10  :
+            url_grep()
+            find_one(sys.argv[1])
+        else :
+            print '\nFirst parameter should be interger and > 10 !\n', sys.argv[1], '> 10 really ???\n'
+            sys.exit(0)
                
-    elif sys.argv.__len__() == 3:
+    elif sys.argv.__len__() == 3:  # script with 2 parameters
         if sys.argv[2].isdigit() :
-            if int(sys.argv[1]) > int(sys.argv[2]):
-                print '\nFirst parameter should be less than second parameter !\n', sys.argv[1], '<', sys.argv[2], 'really ???\n'
-                exit(0)
+            if sys.argv[1].isalpha() or int(sys.argv[1]) > int(sys.argv[2]) or int(sys.argv[1]) < 10 :
+                print '\nFirst parameter should be > 10 and less than second parameter !\n'
+                sys.exit(0)
             else :
                 url_grep()
                 find_range(sys.argv[1], sys.argv[2])
@@ -78,10 +81,10 @@ if __name__ == "__main__":
             grep_i(sys.argv[2])
             find_one(sys.argv[1],links2)
  
-    elif sys.argv.__len__() == 4:
-        if int(sys.argv[1]) > int(sys.argv[2]):
-            print '\nFirst parameter should be less than second parameter !\n', sys.argv[1], '<', sys.argv[2], 'really ???\n'
-            exit(0)
+    elif sys.argv.__len__() == 4:  # script with 3 parameters
+        if sys.argv[1].isalpha() or int(sys.argv[1]) > int(sys.argv[2]) or int(sys.argv[1]) < 10 :
+            print '\nFirst parameter should be > 10 and less than second parameter !\n'
+            sys.exit(0)
         else:
             url_grep()
             grep_i(sys.argv[3])

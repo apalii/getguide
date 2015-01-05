@@ -92,7 +92,7 @@ def find_range(first, last, link_list=links):
     server.handle_request()
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1 or len(sys.argv)) > 4:
+    if len(sys.argv) == 1 or len(sys.argv) > 4:
         message = '''How to use:
             getguide.py  <int>   <  <int>      <str>
             getguide.py <from MR> <to MR> <grep pattern>

@@ -52,10 +52,13 @@ def find_one(mr, mylist=links):
             self.end_headers()
             self.wfile.write(bytes("<title>Guides</title>", "utf-8"))
             self.wfile.write(bytes("<body><p>One click to select all:</p>", "utf-8"))
-            self.wfile.write(bytes('<textarea onclick="this.select()" rows="{}" style="width:75%;margin-left: 12.5%">'.format(rows), "utf-8"))
+            self.wfile.write(bytes('<textarea onclick="this.select()"', "utf-8")) 
+            self.wfile.write(bytes('rows="{}" style="width:75%;margin-left: 12.5%">'.format(rows), "utf-8"))
             for link in sorted(result):
                 self.wfile.write(bytes('http://portaone.com' + link + '\n', "utf-8"))
-            self.wfile.write(bytes("</textarea>", "utf-8"))
+            self.wfile.write(bytes("</textarea><br><br>", "utf-8"))
+            self.wfile.write(bytes('<a href="https://github.com/apalii/getguide/">', "utf-8"))
+            self.wfile.write(bytes('<small>Last version here</small></a>', "utf-8"))
 
     server = HTTPServer(('127.0.0.1', 0), RequestHandler)
     webbrowser.open('http://127.0.0.1:%s' % server.server_port)
@@ -82,10 +85,13 @@ def find_range(first, last, link_list=links):
             self.end_headers()
             self.wfile.write(bytes("<title>Guides</title>", "utf-8"))
             self.wfile.write(bytes("<body><p>One click to select all:</p>", "utf-8"))
-            self.wfile.write(bytes('<textarea onclick="this.select()" rows="{}" style="width:75%;margin-left: 12.5%">'.format(rows), "utf-8"))
+            self.wfile.write(bytes('<textarea onclick="this.select()"', "utf-8")) 
+            self.wfile.write(bytes('rows="{}" style="width:75%;margin-left: 12.5%">'.format(rows), "utf-8"))
             for link in sorted(result):
                 self.wfile.write(bytes('http://portaone.com' + link + '\n', "utf-8"))
-            self.wfile.write(bytes("</textarea>", "utf-8"))
+            self.wfile.write(bytes("</textarea><br><br>", "utf-8"))
+            self.wfile.write(bytes('<a href="https://github.com/apalii/getguide/">', "utf-8"))
+            self.wfile.write(bytes('<small>Last version here</small></a>', "utf-8"))
 
     server = HTTPServer(('127.0.0.1', 0), RequestHandler)
     webbrowser.open('http://127.0.0.1:%s' % server.server_port)
@@ -123,10 +129,9 @@ if __name__ == "__main__":
         else:
             url_grep()
             grep_i(sys.argv[2])
-            print(links2)
             find_one(sys.argv[1], links2)
 
-    elif len(sys.argv) == 4:  # script with 3 parameters
+    elif len(sys.argv) == 4:
         if sys.argv[1].isalpha() or int(sys.argv[1]) > int(sys.argv[2]) or int(sys.argv[1]) < 10:
             print('\nFirst parameter should be > 10 and less than second parameter !\n')
             sys.exit(0)

@@ -3,40 +3,42 @@
 import webbrowser
 import re
 import sys
+
 try:
     from http.server import BaseHTTPRequestHandler, HTTPServer
     import urllib.request
+    import requests
 except ImportError:
-    print('use python3 instead python')
-    sys.exit(1)
+    sys.exit('use python3 instead python and install requests package: pip install requests')
 
 links = set()
 links2 = set()
-urls = ['http://portaone.com/support/documentation/old/', 'http://portaone.com/support/documentation/']
+urls = ['https://portaone.com/support/documentation/old/', 'https://portaone.com/support/documentation/']
 
 
 def url_grep():
-    '''This function will fill the list "links" with direct links on guides.
-    '''
+    """This function will fill the list "links" with direct links on guides.
+    """
     for page in urls:
-        responce = urllib.request.urlopen(page)
-        html = responce.read()
-        result = re.findall('(\/resources\/docs\S+pdf)', str(html))
+        responce = requests.get(page)
+        result = re.findall(r"/docs/ps/mr\d{2}\S+pdf", responce.text)
         for i in result:
             links.add(''.join(i))
 
 
 def grep_i(guide):
-    '''this is an analog of the grep -i
-    '''
+    """this is an analog of the grep -i
+    """
     for i in links:
         if re.search(guide, i, re.I):
             links2.add(i)
 
 
-def find_one(mr, mylist=links):
-    '''Docstring for find_one
-    '''
+def find_one(mr, mylist=None):
+    """Docstring for find_one
+    """
+    if mylist is None:
+        mylist = links
     result = set()
     for i in sorted(mylist):
         if re.search(mr, i):
@@ -45,17 +47,16 @@ def find_one(mr, mylist=links):
 
     class RequestHandler(BaseHTTPRequestHandler):
 
-
         def do_GET(self):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(bytes("<title>Guides</title>", "utf-8"))
             self.wfile.write(bytes("<body><p>One click to select all:</p>", "utf-8"))
-            self.wfile.write(bytes('<textarea onclick="this.select()"', "utf-8")) 
+            self.wfile.write(bytes('<textarea onclick="this.select()"', "utf-8"))
             self.wfile.write(bytes('rows="{}" style="width:75%;margin-left: 12.5%">'.format(rows), "utf-8"))
             for link in sorted(result):
-                self.wfile.write(bytes('http://portaone.com' + link + '\n', "utf-8"))
+                self.wfile.write(bytes('https://portaone.com' + link + '\n', "utf-8"))
             self.wfile.write(bytes("</textarea><br><br>", "utf-8"))
             self.wfile.write(bytes('<a href="https://github.com/apalii/getguide/">', "utf-8"))
             self.wfile.write(bytes('<small>Last version here</small></a>', "utf-8"))
@@ -65,9 +66,11 @@ def find_one(mr, mylist=links):
     server.handle_request()
 
 
-def find_range(first, last, link_list=links):
-    '''Docstring for find_range
-    '''
+def find_range(first, last, link_list=None):
+    """Docstring for find_range
+    """
+    if link_list is None:
+        link_list = links
     result = set()
     mr_range = ['MR' + str(i) for i in range(int(first), int(last) + 1)]
     for mr in mr_range:
@@ -77,15 +80,13 @@ def find_range(first, last, link_list=links):
     rows = str(len(result))
 
     class RequestHandler(BaseHTTPRequestHandler):
-
-
         def do_GET(self):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(bytes("<title>Guides</title>", "utf-8"))
             self.wfile.write(bytes("<body><p>One click to select all:</p>", "utf-8"))
-            self.wfile.write(bytes('<textarea onclick="this.select()"', "utf-8")) 
+            self.wfile.write(bytes('<textarea onclick="this.select()"', "utf-8"))
             self.wfile.write(bytes('rows="{}" style="width:75%;margin-left: 12.5%">'.format(rows), "utf-8"))
             for link in sorted(result):
                 self.wfile.write(bytes('http://portaone.com' + link + '\n', "utf-8"))
@@ -96,6 +97,7 @@ def find_range(first, last, link_list=links):
     server = HTTPServer(('127.0.0.1', 0), RequestHandler)
     webbrowser.open('http://127.0.0.1:%s' % server.server_port)
     server.handle_request()
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 1 or len(sys.argv) > 4:
